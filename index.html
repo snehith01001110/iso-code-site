@@ -95,7 +95,11 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 .install-links a{color:var(--fg-dim);text-decoration:none}
 .install-links a:hover{color:var(--accent)}
 .install-client .code-block pre,.install-core .code-block pre{font-size:.82rem;padding:.8rem 1rem}
-@media(max-width:680px){.install-clients{grid-template-columns:1fr}}
+@media(max-width:680px){
+  .install-clients{grid-template-columns:1fr}
+  .install-audience{position:static;margin:0 0 .9rem;width:fit-content;max-width:100%}
+  .install-core,.install-client{padding-top:1.2rem}
+}
 
 .usage-heading{display:flex;align-items:center;gap:.7rem;margin:0 0 .4rem;font-size:1.15rem;font-weight:600}
 .usage-heading code{background:none;padding:0;border:0;color:var(--accent);font-family:var(--mono);font-size:1rem}
