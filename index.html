@@ -91,6 +91,9 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 .install-audience .for-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:500}
 .install-desc{color:var(--fg-dim);margin:0 0 1rem;font-size:.92rem;line-height:1.5}
 .install-desc code{font-size:.82rem}
+.install-links{display:flex;gap:1.2rem;margin-top:.7rem;font-family:var(--mono);font-size:.78rem}
+.install-links a{color:var(--fg-dim);text-decoration:none}
+.install-links a:hover{color:var(--accent)}
 .install-client .code-block pre,.install-core .code-block pre{font-size:.82rem;padding:.8rem 1rem}
 @media(max-width:680px){.install-clients{grid-template-columns:1fr}}
 
@@ -235,6 +238,10 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 <span class="p">iso-code</span> = <span class="s">"0.1"</span></pre>
           <button class="copy-btn" data-copy='[dependencies]&#10;iso-code = "0.1"'>Copy</button>
         </div>
+        <div class="install-links">
+          <a href="https://crates.io/crates/iso-code">crates.io&nbsp;↗</a>
+          <a href="https://docs.rs/iso-code">docs.rs&nbsp;↗</a>
+        </div>
       </div>
 
       <div class="install-arrow" aria-hidden="true">
@@ -254,6 +261,9 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 <pre><span class="f">cargo</span> install iso-code-cli</pre>
             <button class="copy-btn" data-copy="cargo install iso-code-cli">Copy</button>
           </div>
+          <div class="install-links">
+            <a href="https://crates.io/crates/iso-code-cli">crates.io&nbsp;↗</a>
+          </div>
         </div>
         <div class="install-client">
           <div class="install-label">Binary · wraps iso-code</div>
@@ -263,6 +273,9 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
           <div class="code-block">
 <pre><span class="f">cargo</span> install iso-code-mcp</pre>
             <button class="copy-btn" data-copy="cargo install iso-code-mcp">Copy</button>
+          </div>
+          <div class="install-links">
+            <a href="https://crates.io/crates/iso-code-mcp">crates.io&nbsp;↗</a>
           </div>
         </div>
       </div>
