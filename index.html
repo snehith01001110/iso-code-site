@@ -479,12 +479,13 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===id));
   });
 });
-// Live crates.io version
+// Live version from GitHub releases (crates.io API blocks browser fetches)
 (async()=>{
   try{
-    const r=await fetch('https://crates.io/api/v1/crates/iso-code',{headers:{'Accept':'application/json','User-Agent':'isocode.dev website'}});
+    const r=await fetch('https://api.github.com/repos/snehith01001110/ISO-Framework/releases/latest',{headers:{'Accept':'application/vnd.github+json'}});
     if(!r.ok)return;
-    const v=(await r.json())?.crate?.newest_version;
+    const tag=(await r.json())?.tag_name;
+    const v=tag?.replace(/^v/,'');
     if(!v)return;
     const display=document.getElementById('crate-version-display');
     if(display)display.textContent=`"${v}"`;
