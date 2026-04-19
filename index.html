@@ -38,8 +38,8 @@ code{font-family:var(--mono);font-size:.9em;background:var(--bg-3);padding:.1em 
 pre{font-family:var(--mono);background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:.88rem;line-height:1.55;margin:0}
 pre code{background:none;padding:0;border:0;font-size:inherit}
 .container{max-width:1040px;margin:0 auto;padding:0 1.5rem}
-.nav{position:sticky;top:0;z-index:10;background:rgba(8,13,26,.85);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;max-width:1040px;margin:0 auto}
+.nav{position:sticky;top:0;z-index:10;background:rgba(8,13,26,.85);backdrop-filter:blur(8px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;max-width:1040px;margin:0 auto;border-bottom:1px solid var(--border)}
 .brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
 .brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
 .nav-links{display:flex;gap:1.4rem;font-size:.9rem}
@@ -153,6 +153,14 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 .footer a:hover{color:var(--fg)}
 
 .badge{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.15rem .5rem;border-radius:4px;background:var(--bg-3);border:1px solid var(--border-2);color:var(--fg-dim);margin-right:.4rem}
+
+.version-badge{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.72rem;padding:.18rem .55rem;background:rgba(251,150,51,.08);border:1px solid rgba(251,150,51,.2);border-radius:999px;color:var(--accent);margin-left:.7rem;vertical-align:middle;opacity:0;transition:opacity .3s ease}
+.version-badge.loaded{opacity:1}
+.version-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:vpulse 2.4s ease-in-out infinite}
+@keyframes vpulse{0%,100%{opacity:1}50%{opacity:.25}}
+.hero-version-badge{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.65rem;padding:.1rem .45rem;background:rgba(251,150,51,.08);border:1px solid rgba(251,150,51,.22);border-radius:999px;color:var(--accent);text-decoration:none;transition:background .15s,border-color .15s;width:fit-content}
+.hero-version-badge:hover{background:rgba(251,150,51,.15);border-color:rgba(251,150,51,.45);text-decoration:none}
+.hero-version-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:vpulse 2.4s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -169,6 +177,7 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 </nav>
 
 <header class="hero">
+  <a id="hero-version-badge" href="https://crates.io/crates/iso-code" target="_blank" rel="noopener" class="hero-version-badge" style="display:none;position:absolute;top:1rem;left:1.5rem;z-index:5"></a>
   <div class="container hero-inner">
     <div class="eyebrow">Rust library · CLI · MCP server</div>
     <h1>Safe git worktree lifecycle<br>for <span class="mono">AI coding agents</span></h1>
@@ -227,7 +236,7 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 
 <section id="install">
   <div class="container">
-    <h2>Install</h2>
+    <h2>Install <span class="version-badge" id="version-badge"><span class="version-dot"></span><span id="version-badge-text"></span></span></h2>
     <p class="section-lead"><span class="mono-accent">iso-code</span> is one Rust library. The <code>wt</code> CLI and the MCP server are thin binaries that wrap it — both delegate every worktree operation to the library, so all three paths enforce the same safety guarantees.</p>
 
     <div class="install-stack">
@@ -239,8 +248,8 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
         <div class="code-block">
 <pre><span class="c"># Cargo.toml</span>
 [<span class="p">dependencies</span>]
-<span class="p">iso-code</span> = <span class="s">"0.1"</span></pre>
-          <button class="copy-btn" data-copy='[dependencies]&#10;iso-code = "0.1"'>Copy</button>
+<span class="p">iso-code</span> = <span class="s" id="crate-version-display">"0.1"</span></pre>
+          <button class="copy-btn" id="crate-copy-btn" data-copy='[dependencies]&#10;iso-code = "0.1"'>Copy</button>
         </div>
         <div class="install-links">
           <a href="https://crates.io/crates/iso-code">crates.io&nbsp;↗</a>
@@ -470,6 +479,25 @@ document.querySelectorAll('.tab').forEach(t=>{
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===id));
   });
 });
+// Live crates.io version
+(async()=>{
+  try{
+    const r=await fetch('https://crates.io/api/v1/crates/iso-code',{headers:{'Accept':'application/json','User-Agent':'isocode.dev website'}});
+    if(!r.ok)return;
+    const v=(await r.json())?.crate?.newest_version;
+    if(!v)return;
+    const display=document.getElementById('crate-version-display');
+    if(display)display.textContent=`"${v}"`;
+    const btn=document.getElementById('crate-copy-btn');
+    if(btn)btn.dataset.copy=`[dependencies]\niso-code = "${v}"`;
+    const badgeText=document.getElementById('version-badge-text');
+    if(badgeText)badgeText.textContent=`v${v}`;
+    const badge=document.getElementById('version-badge');
+    if(badge)badge.classList.add('loaded');
+    const hero=document.getElementById('hero-version-badge');
+    if(hero){hero.innerHTML=`<span class="hero-version-dot"></span>v${v} on crates.io`;hero.style.display='inline-flex';}
+  }catch(e){}
+})();
 // Copy buttons
 document.querySelectorAll('.copy-btn').forEach(b=>{
   b.addEventListener('click',async()=>{
