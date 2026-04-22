@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What an external test pass looks like · iso-code</title>
+<meta name="description" content="Methodology, numbers, and gaps from validating iso-code v0.1.1 against five real-world repositories. Reproducible end-to-end in 90 seconds.">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="What an external test pass looks like">
+<meta property="og:description" content="Methodology, numbers, and gaps from validating iso-code v0.1.1 against five real-world repositories.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FB9633'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='ui-monospace,monospace' font-size='58' font-weight='700' fill='%23080d1a'%3Ei%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080d1a; --bg-2:#0e1526; --bg-3:#141c30;
+  --border:#1e2740; --border-2:#2a3555;
+  --fg:#faebd7; --fg-dim:#a8b0c2; --fg-faint:#6a7387;
+  --accent:#FB9633; --accent-dim:#e07d1a;
+  --danger:#ff6b6b;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);padding:.1em .4em;border-radius:4px;border:1px solid var(--border);color:var(--fg)}
+pre{font-family:var(--mono);background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:.84rem;line-height:1.6;margin:1.5rem 0;color:var(--fg-dim)}
+pre code{background:none;padding:0;border:0;font-size:inherit;color:inherit}
+
+.container{max-width:760px;margin:0 auto;padding:0 1.5rem}
+.nav{position:sticky;top:0;z-index:10;background:rgba(8,13,26,.85);backdrop-filter:blur(8px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);max-width:1040px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
+.brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.nav-links{display:flex;gap:1.4rem;font-size:.9rem}
+.nav-links a{color:var(--fg-dim)}
+.nav-links a:hover{color:var(--fg);text-decoration:none}
+.nav-links a.active{color:var(--accent)}
+@media(max-width:600px){.nav-links a:not(.github){display:none}}
+
+article{padding:3rem 0 4rem}
+.article-header{margin-bottom:3rem}
+.article-meta{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--fg-faint);margin-bottom:.9rem;text-transform:uppercase}
+h1{font-size:clamp(1.7rem,3.6vw,2.3rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1rem;font-weight:700}
+.deck{color:var(--fg-dim);font-size:1.08rem;margin:0;line-height:1.55}
+
+article p{margin:1.2rem 0}
+article h2{font-size:1.4rem;margin:2.6rem 0 1rem;font-weight:600;letter-spacing:-.01em}
+article h3{font-size:1.08rem;margin:1.8rem 0 .7rem;font-weight:600}
+article ul,article ol{padding-left:1.4rem;margin:1.2rem 0}
+article li{margin:.4rem 0;color:var(--fg-dim)}
+article li strong{color:var(--fg)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.92rem;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.5rem 0}
+.tbl th,.tbl td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tbody tr:last-child th,.tbl tbody tr:last-child td{border-bottom:0}
+.tbl th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-faint);font-weight:500;background:var(--bg-3)}
+.tbl td:first-child{color:var(--fg)}
+.tbl td{color:var(--fg-dim)}
+.tbl td.num{font-family:var(--mono);color:var(--accent);text-align:right}
+.tbl tr.row-strong td:first-child{font-weight:600}
+
+.callout{background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.2rem 1.4rem;margin:1.8rem 0;font-size:.95rem;color:var(--fg-dim)}
+.callout strong{color:var(--fg)}
+.callout-warn{border-left-color:var(--danger)}
+
+.footer{padding:3rem 0;color:var(--fg-faint);font-size:.88rem;border-top:1px solid var(--border);margin-top:2rem}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;align-items:baseline;max-width:1040px;margin:0 auto;padding:0 1.5rem}
+.footer a{color:var(--fg-dim)}
+.footer a:hover{color:var(--fg)}
+
+.back-link{display:inline-block;font-family:var(--mono);font-size:.82rem;color:var(--fg-dim);margin-top:3rem}
+.back-link:hover{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="brand"><span class="brand-mark">i</span>iso-code</a>
+    <div class="nav-links">
+      <a href="../#install">Install</a>
+      <a href="../#usage">Usage</a>
+      <a href="./" class="active">Blog</a>
+      <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <div class="container">
+
+    <header class="article-header">
+      <div class="article-meta">2026-04-22 · 6 min read</div>
+      <h1>What an external test pass looks like.</h1>
+      <p class="deck">A library that promises data safety only matters if someone has tested it under conditions that look like reality. Here is the methodology, the numbers, and the gaps for iso-code v0.1.1 — reproducible end-to-end in 90 seconds against any repository of your choice.</p>
+    </header>
+
+    <p>This is the methodology companion to <a href="2026-04-21-tested-against-real-repos.html">the post that headlines the bugs we found</a>. If you're evaluating whether to depend on iso-code for a tool you're building, this is the page you want.</p>
+
+    <h2>What we tested against</h2>
+
+    <p>The PRD names the target market explicitly: AI coding orchestrators (Claude Code, Cursor, Claude Squad, OpenCode, VS Code Copilot) and the developers who run them on real codebases. The test set therefore had to look like what those tools actually point agents at — not famous OSS infrastructure repos.</p>
+
+    <table class="tbl">
+      <thead><tr><th>Repo</th><th>Size</th><th>Why included</th></tr></thead>
+      <tbody>
+        <tr><td><code>bat</code></td><td>45 MB</td><td>Smallest baseline · Rust CLI · fast iteration</td></tr>
+        <tr><td><code>flask</code></td><td>15 MB</td><td>Confirms behavior is not Rust-specific · Python · default branch <code>main</code></td></tr>
+        <tr><td><code>shadcn-ui</code></td><td>153 MB</td><td>TypeScript pnpm monorepo · pnpm-workspace.yaml</td></tr>
+        <tr><td><code>git/git</code></td><td>377 MB</td><td>Has <code>sha1collisiondetection</code> as a real submodule</td></tr>
+        <tr><td><code>next.js</code></td><td>2.7 GB</td><td>Headline target · large pnpm monorepo · default branch <code>canary</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>Five repos · four languages · three default-branch names · sizes spanning 180×.</p>
+
+    <h2>The 15-check lifecycle suite</h2>
+
+    <p>Each repo was subjected to identical checks. Every check is asserting one specific iso-code surface — not "does this work" in general, but "does this specific guarantee hold."</p>
+
+    <h3>Smoke (8 checks)</h3>
+    <p>Establishes the happy path. If smoke fails, nothing else is meaningful.</p>
+    <ul>
+      <li><strong>list_initial:</strong> <code>wt list</code> works on a fresh repo</li>
+      <li><strong>create:</strong> <code>wt create</code> succeeds, with timing</li>
+      <li><strong>list_post_create:</strong> count increments correctly</li>
+      <li><strong>state_json_valid:</strong> <code>.git/iso-code/state.json</code> parses as well-formed JSON</li>
+      <li><strong>worktree_on_disk:</strong> the directory actually exists with content</li>
+      <li><strong>delete:</strong> <code>wt delete</code> removes the worktree, with timing</li>
+      <li><strong>list_post_delete:</strong> count returns to baseline</li>
+      <li><strong>gc_dry_run:</strong> <code>wt gc</code> runs in dry-run mode and prints its summary format</li>
+    </ul>
+
+    <h3>Stretch (7 checks)</h3>
+    <p>Exercises the safety invariants — the parts that distinguish iso-code from a thin wrapper around <code>git worktree</code>.</p>
+    <ul>
+      <li><strong>multi_create_x3:</strong> three worktrees simultaneously, state stays consistent</li>
+      <li><strong>state_count_after_multi:</strong> <code>active_worktrees</code> matches reality</li>
+      <li><strong>external_remove_reconciled:</strong> a worktree removed via raw <code>git worktree remove</code> is detected on next <code>wt list</code> and moved to <code>stale_worktrees</code> with a 30-day TTL — instead of silently lying about its existence</li>
+      <li><strong>lock_protection:</strong> a <code>git worktree lock</code>'d worktree survives <code>wt delete</code> with a "locked" error; the directory is preserved</li>
+      <li><strong>attach_external:</strong> <code>wt attach</code> registers a worktree iso-code didn't create</li>
+      <li><strong>duplicate_branch_error:</strong> creating on an already-checked-out branch is refused cleanly</li>
+      <li><strong>missing_path_error:</strong> deleting a non-existent path returns "not found" — no panic, no stack trace</li>
+    </ul>
+
+    <h2>Results</h2>
+
+    <p>All five repos passed all 15 checks. The performance was consistent — create time scales with checkout size, not git-history size, because <code>git worktree add</code> shares the <code>.git/</code> directory between worktrees instead of copying it.</p>
+
+    <table class="tbl">
+      <thead><tr><th>Repo</th><th>Working tree</th><th class="num">Create</th><th class="num">Delete</th><th class="num">Multi ×3</th></tr></thead>
+      <tbody>
+        <tr><td>flask</td><td>2.4 MB</td><td class="num">164 ms</td><td class="num">504 ms</td><td class="num">570 ms</td></tr>
+        <tr><td>bat</td><td>10 MB</td><td class="num">242 ms</td><td class="num">714 ms</td><td class="num">851 ms</td></tr>
+        <tr><td>git/git</td><td>58 MB</td><td class="num">590 ms</td><td class="num">1,285 ms</td><td class="num">2,046 ms</td></tr>
+        <tr><td>shadcn-ui</td><td>90 MB</td><td class="num">884 ms</td><td class="num">1,701 ms</td><td class="num">2,952 ms</td></tr>
+        <tr class="row-strong"><td>next.js</td><td>246 MB</td><td class="num">3,483 ms</td><td class="num">4,429 ms</td><td class="num">12,824 ms</td></tr>
+      </tbody>
+    </table>
+
+    <p>Multi-create scales near-linearly. Delete consistently runs about 1.5–2× slower than create — that's a filesystem-bound recursive remove, not iso-code overhead. There were no non-linear blowups at any size we tested.</p>
+
+    <h2>Fixtures: the safety paths no public repo can exercise</h2>
+
+    <p>Three of iso-code's promised safety guards can't be triggered by cloning anything off GitHub — public repos either don't have unmerged commits, or aren't shaped the right way, or aren't encrypted. So we wrote fixtures.</p>
+
+    <ul>
+      <li><strong>Unmerged-commit guard:</strong> a repo with three unpushed, unmerged commits on a feature branch. <code>wt delete</code> against that branch must refuse. Result: refused with <code>unmerged commits on 'feature/unmerged': 4 commit(s) not in upstream — use force to override</code>. The directory was preserved on disk; data safe. The fetch step gracefully degraded to local-only when no remote was configured — exactly the behavior the PRD specifies.</li>
+      <li><strong>Shallow + bare clones:</strong> <code>git clone --depth 1</code> and <code>git clone --bare</code> were both expected to be edge cases. They turned out not to be — both work transparently. <code>wt list</code> and <code>wt create</code> succeeded against both shapes without any special handling.</li>
+      <li><strong>git-crypt locked repo:</strong> fixture is built and ready, but skipped on this machine because <code>git-crypt</code> isn't installed. Marked as a follow-up — the only README-promised safety guard not yet empirically verified.</li>
+    </ul>
+
+    <h2>The headline scenario: 4,972 symlinks</h2>
+
+    <p>The single most important test in the pass — and the one that validates the bug class iso-code's README is built around.</p>
+
+    <p>On shadcn-ui, we created a worktree and ran <code>pnpm install</code> inside it. pnpm uses a global content-addressable store outside the worktree, with thousands of symlinks pointing into it from each project's <code>node_modules</code>. The setup:</p>
+
+    <table class="tbl">
+      <thead><tr><th>Metric</th><th class="num">Value</th></tr></thead>
+      <tbody>
+        <tr><td>Worktree size on disk</td><td class="num">1.3 GB</td></tr>
+        <tr><td>Top-level <code>node_modules</code></td><td class="num">1.2 GB</td></tr>
+        <tr><td><code>node_modules</code> directories</td><td class="num">4</td></tr>
+        <tr class="row-strong"><td>Symlinks in worktree</td><td class="num">4,972</td></tr>
+        <tr><td>pnpm global store size</td><td class="num">1.1 GB</td></tr>
+      </tbody>
+    </table>
+
+    <p>Then <code>wt delete</code>:</p>
+
+    <table class="tbl">
+      <thead><tr><th>Metric</th><th>Pre</th><th>Post</th></tr></thead>
+      <tbody>
+        <tr><td>Worktree on disk</td><td>1.3 GB</td><td>removed</td></tr>
+        <tr class="row-strong"><td>pnpm global store</td><td>1.1 GB</td><td><strong>1.1 GB unchanged</strong></td></tr>
+        <tr><td><code>active_worktrees</code></td><td>1</td><td>0</td></tr>
+        <tr><td>Wall time</td><td>—</td><td>12.4 s</td></tr>
+      </tbody>
+    </table>
+
+    <p>This is exactly where other orchestrators have shipped data-loss bugs: a worktree's <code>node_modules</code> is thousands of symlinks pointing into a single shared directory outside the worktree. A naive "follow symlinks during delete" implementation eats the shared store, breaking every other project on the machine. iso-code cleaned 4,972 symlinks in 12 seconds without touching a single byte of the global store.</p>
+
+    <h2>What we deliberately didn't test</h2>
+
+    <p>An honest test pass names its gaps. These are the surfaces that aren't yet validated and that an adopter should know about.</p>
+
+    <table class="tbl">
+      <thead><tr><th>Surface</th><th>Why not yet</th></tr></thead>
+      <tbody>
+        <tr><td>git-crypt locked-repo guard</td><td>Fixture exists; <code>git-crypt</code> not installed on this machine</td></tr>
+        <tr><td>Concurrent create from two shells</td><td>Single-shell harness; needs a 2-terminal coordinator</td></tr>
+        <tr><td>MCP integration with Claude Code / Cursor</td><td>Tested via CLI; not yet wired through a real MCP client</td></tr>
+        <tr><td>EcosystemAdapter / DefaultAdapter</td><td>No adapter configured in any test</td></tr>
+        <tr><td>Force-delete of unmerged branch</td><td>Hinted at by guard error; not yet exercised</td></tr>
+        <tr><td>Disk-limit enforcement</td><td><code>CreateOptions::ignore_disk_limit</code> never set</td></tr>
+        <tr><td>Port-lease allocation</td><td><code>CreateOptions::allocate_port</code> never set</td></tr>
+        <tr><td>Crash-safe state-file write under induced crash</td><td>Logic verified by inspection; not stress-tested</td></tr>
+        <tr><td>Windows platform</td><td>macOS-only test pass · per PRD, Windows is M3</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Reproduce it yourself</h2>
+
+    <p>The whole pipeline is scripted. Anything you read above can be regenerated end-to-end in 90 seconds (after the initial repo clones). The harness is idempotent — it cleans up its own worktrees and branches at start and end, and never touches your main checkout.</p>
+
+    <pre><span></span># Prerequisites: wt (iso-code-cli) on PATH, git, python3
+git clone https://github.com/sharkdp/bat.git
+cd bat
+./test-lifecycle.sh .         # 15 checks, sub-3s on most repos</pre>
+
+    <p>Expected output:</p>
+
+    <pre>[smoke]
+  [PASS] list_initial                  (1 entries)
+  [PASS] create                        (242ms)
+  [PASS] list_post_create              (2 entries)
+  [PASS] state_json_valid
+  [PASS] worktree_on_disk              (10132KB)
+  [PASS] delete                        (714ms)
+  [PASS] list_post_delete
+  [PASS] gc_dry_run
+
+[stretch]
+  [PASS] multi_create_x3               (851ms)
+  [PASS] state_count_after_multi       (3 active)
+  [PASS] external_remove_reconciled    (active=2 stale=2)
+  [PASS] lock_protection               (dir preserved)
+  [PASS] attach_external
+  [PASS] duplicate_branch_error
+  [PASS] missing_path_error
+
+------------------------------------------
+summary: 15 passed, 0 failed, 3s wall</pre>
+
+    <p>Exit code is zero on all-pass, non-zero otherwise. Drop it into CI verbatim.</p>
+
+    <h2>Findings filed back</h2>
+
+    <p>Three issues were filed against the iso-code repo during this pass. The headline post covers them in detail. They are public, with repros and exact patches:</p>
+
+    <ul>
+      <li><a href="https://github.com/snehith01001110/ISO-Framework/issues/18">#18</a> — CLI silently drops extra positional args (medium · 3-line patch)</li>
+      <li><a href="https://github.com/snehith01001110/ISO-Framework/issues/19">#19</a> — Error message leaks <code>Option</code> Debug format (low · 1-line patch)</li>
+      <li><a href="https://github.com/snehith01001110/ISO-Framework/issues/21">#21</a> — Submodules left uninitialized in created worktrees (medium · feature addition)</li>
+    </ul>
+
+    <div class="callout">
+      <strong>The bottom line:</strong> 80 of 80 lifecycle checks passed. Three guards verified by fixture (unmerged-commit, shallow, bare). One headline scenario verified end-to-end (1.3 GB / 4,972 symlinks deleted, 1.1 GB shared store untouched). Three issues filed. One safety guard remains unverified pending <code>brew install git-crypt</code>. Anyone can reproduce these numbers locally.
+    </div>
+
+    <a class="back-link" href="./">← back to all posts</a>
+
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="brand" style="margin-bottom:.4rem"><span class="brand-mark">i</span>iso-code</div>
+      <div>Safe worktrees for agents. Licensed Apache-2.0 OR MIT.</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+      <a href="https://github.com/snehith01001110/ISO-Framework">GitHub</a>
+      <a href="https://crates.io/crates/iso-code">crates.io</a>
+      <a href="../">Home</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

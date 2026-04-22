@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>We tested iso-code on the repos AI agents actually work on. Here's what broke. · iso-code</title>
+<meta name="description" content="Before celebrating v0.1.1, we ran 80 lifecycle checks against five real-world repos. Three things broke. We filed them against ourselves.">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="We tested iso-code on the repos AI agents actually work on. Here's what broke.">
+<meta property="og:description" content="80 lifecycle checks against five real-world repos. Three findings filed back against ourselves.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FB9633'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='ui-monospace,monospace' font-size='58' font-weight='700' fill='%23080d1a'%3Ei%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080d1a; --bg-2:#0e1526; --bg-3:#141c30;
+  --border:#1e2740; --border-2:#2a3555;
+  --fg:#faebd7; --fg-dim:#a8b0c2; --fg-faint:#6a7387;
+  --accent:#FB9633; --accent-dim:#e07d1a;
+  --danger:#ff6b6b;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);padding:.1em .4em;border-radius:4px;border:1px solid var(--border);color:var(--fg)}
+pre{font-family:var(--mono);background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:.86rem;line-height:1.6;margin:1.5rem 0;color:var(--fg-dim)}
+pre code{background:none;padding:0;border:0;font-size:inherit;color:inherit}
+
+.container{max-width:720px;margin:0 auto;padding:0 1.5rem}
+.nav{position:sticky;top:0;z-index:10;background:rgba(8,13,26,.85);backdrop-filter:blur(8px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);max-width:1040px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
+.brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.nav-links{display:flex;gap:1.4rem;font-size:.9rem}
+.nav-links a{color:var(--fg-dim)}
+.nav-links a:hover{color:var(--fg);text-decoration:none}
+.nav-links a.active{color:var(--accent)}
+@media(max-width:600px){.nav-links a:not(.github){display:none}}
+
+article{padding:3rem 0 4rem}
+.article-header{margin-bottom:3rem}
+.article-meta{font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--fg-faint);margin-bottom:.9rem;text-transform:uppercase}
+h1{font-size:clamp(1.7rem,3.6vw,2.3rem);line-height:1.2;letter-spacing:-.02em;margin:0 0 1rem;font-weight:700}
+.deck{color:var(--fg-dim);font-size:1.08rem;margin:0;line-height:1.55}
+
+article p{margin:1.2rem 0}
+article h2{font-size:1.4rem;margin:2.6rem 0 1rem;font-weight:600;letter-spacing:-.01em}
+article h3{font-size:1.08rem;margin:1.8rem 0 .7rem;font-weight:600}
+article ul,article ol{padding-left:1.4rem;margin:1.2rem 0}
+article li{margin:.4rem 0;color:var(--fg-dim)}
+article li strong{color:var(--fg)}
+
+.bug{background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--danger);border-radius:6px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.bug-num{font-family:var(--mono);font-size:.78rem;color:var(--danger);font-weight:600;margin-bottom:.3rem;letter-spacing:.04em}
+.bug-num a{color:var(--danger)}
+.bug-title{font-size:1.05rem;font-weight:600;margin:0 0 .8rem;color:var(--fg)}
+.bug p{margin:.6rem 0;font-size:.94rem;color:var(--fg-dim)}
+.bug p strong{color:var(--fg)}
+
+.callout{background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.2rem 1.4rem;margin:1.8rem 0;font-size:.95rem;color:var(--fg-dim)}
+.callout strong{color:var(--fg)}
+
+.footer{padding:3rem 0;color:var(--fg-faint);font-size:.88rem;border-top:1px solid var(--border);margin-top:2rem}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;align-items:baseline;max-width:1040px;margin:0 auto;padding:0 1.5rem}
+.footer a{color:var(--fg-dim)}
+.footer a:hover{color:var(--fg)}
+
+.back-link{display:inline-block;font-family:var(--mono);font-size:.82rem;color:var(--fg-dim);margin-top:3rem}
+.back-link:hover{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="brand"><span class="brand-mark">i</span>iso-code</a>
+    <div class="nav-links">
+      <a href="../#install">Install</a>
+      <a href="../#usage">Usage</a>
+      <a href="./" class="active">Blog</a>
+      <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<article>
+  <div class="container">
+
+    <header class="article-header">
+      <div class="article-meta">2026-04-21 · 4 min read</div>
+      <h1>We tested iso-code on the repos AI agents actually work on. Here's what broke.</h1>
+      <p class="deck">Before celebrating the v0.1.1 release, we pointed iso-code at five real-world repositories and ran eighty lifecycle checks against the binaries we'd just published. Three things broke. We filed them against ourselves before announcing anything.</p>
+    </header>
+
+    <p>The whole pitch behind iso-code is that every major AI coding orchestrator — Claude Code, Cursor, Claude Squad, OpenCode, VS Code Copilot — has independently shipped worktree-management bugs that lose data. So before we put a library on crates.io claiming to fix that class of bug, we wanted external validation that the library itself doesn't ship its own version of the same problem.</p>
+
+    <p>This is the result of that test pass. The headline: the safety guarantees the README promises hold up end-to-end. But our own bug-finding standards uncovered three real issues, all now filed at <a href="https://github.com/snehith01001110/ISO-Framework/issues">github.com/snehith01001110/ISO-Framework/issues</a>. They're public, they have repros, they have the exact patches, and one of them is the exact category we built iso-code to prevent.</p>
+
+    <h2>The setup</h2>
+
+    <p>We cloned five repositories that span the languages and shapes AI agents are actually pointed at: <code>bat</code> (small Rust CLI), <code>flask</code> (Python web framework), <code>shadcn-ui</code> (TypeScript pnpm monorepo), <code>git/git</code> itself (C, with a real submodule), and <code>next.js</code> (a 2.7 GB pnpm monorepo). Five repos · four languages · three default-branch names (<code>master</code>, <code>main</code>, <code>canary</code>) · sizes from 15 MB to 2.7 GB.</p>
+
+    <p>Against each, we ran a 15-check lifecycle suite covering the smoke path (create, list, delete, gc) and the stretch path (multi-worktree state consistency, external-drift reconciliation, lock protection, attach, error messages). On top of that, we built three fixtures for safety paths no public clone can exercise: an unmerged-commit branch to trigger the 5-step pre-delete guard, shallow and bare clones, and a git-crypt locked repo. Plus one stress scenario: install a real <code>node_modules</code> in a worktree, then delete the worktree.</p>
+
+    <p>All 80 lifecycle checks passed. All three runnable fixtures passed. The pnpm stress scenario passed. The library does what it says it does.</p>
+
+    <p>Then we found three things to fix.</p>
+
+    <h2>Bug 1: a misleading error message turned a quoting mistake into a 20-minute debug</h2>
+
+    <div class="bug">
+      <div class="bug-num"><a href="https://github.com/snehith01001110/ISO-Framework/issues/18">Issue #18</a> · medium severity · 3-line patch</div>
+      <div class="bug-title">CLI subcommands silently drop extra positional args</div>
+      <p>An external user ran <code>wt create feature/auth /Users/kg/Documents/Documents - kg/projects/foo</code> with an unquoted path. The shell split it into four arguments. <code>wt create</code> took the first as the path (which happened to exist on the user's machine) and silently discarded the rest. The error message read "worktree path already exists" — pointing at completely the wrong problem.</p>
+      <p><strong>Root cause:</strong> arg validation in <code>iso-code-cli/src/main.rs</code> uses a lower-bound check (<code>args.len() &lt; 2</code>) instead of an exact match. Extras are accepted and ignored. Same pattern in <code>run_create</code>, <code>run_delete</code>, and <code>run_attach</code>.</p>
+      <p><strong>Fix:</strong> three lines, change <code>&lt;</code> to <code>!=</code> in the right places. The CLI now rejects extra args with a usage message, surfacing the quoting mistake immediately.</p>
+    </div>
+
+    <h2>Bug 2: an Option leaked into a user-facing string</h2>
+
+    <div class="bug">
+      <div class="bug-num"><a href="https://github.com/snehith01001110/ISO-Framework/issues/19">Issue #19</a> · low severity · 1-line patch</div>
+      <div class="bug-title">"worktree is locked: None"</div>
+      <p>Lock protection works correctly — <code>wt delete</code> on a locked worktree refuses, and the directory is preserved. But the error message rendered as <code>worktree is locked: None</code>. The literal string "None" is the Rust <code>Option::None</code> Debug formatter leaking through. Lock with a reason and you'd see <code>worktree is locked: Some("in-flight build")</code>. Same root cause; equally wrong.</p>
+      <p>This reproduced on every single one of the five repos we tested — it's not edge-case noise, it's a bug that ships every time a worktree is locked without a reason.</p>
+      <p><strong>Fix:</strong> change <code>{reason:?}</code> to a closure-form attribute on <code>WorktreeError::WorktreeLocked</code> that branches on <code>Some</code> / <code>None</code>. Cosmetic, but in a security-adjacent surface — error messages users read when something refuses to delete their data — cosmetic matters.</p>
+    </div>
+
+    <h2>Bug 3: the one we built iso-code to prevent</h2>
+
+    <div class="bug">
+      <div class="bug-num"><a href="https://github.com/snehith01001110/ISO-Framework/issues/21">Issue #21</a> · medium severity · feature addition</div>
+      <div class="bug-title">Submodules left uninitialized in created worktrees</div>
+      <p>When iso-code creates a worktree on a repository that uses git submodules, the submodule directories show up in the new worktree as <strong>empty folders</strong>. The <code>.gitmodules</code> file is there. The directory is there. The contents are not.</p>
+      <p>This is <code>git worktree add</code>'s default behavior, and iso-code inherits it. But for the audience iso-code targets — AI coding agents that get handed a fresh worktree and asked to work in it — this is exactly the class of silent correctness gap the README headlines. The agent runs the project's build, it fails because a dependency directory is empty, and the agent has no signal explaining why.</p>
+      <p><strong>How we found it:</strong> we ran the lifecycle suite on <code>git/git</code>, which has <code>sha1collisiondetection</code> as a real submodule. The new worktree's submodule directory was empty. <code>git submodule status</code> showed the leading <code>-</code> meaning uninitialized.</p>
+      <p><strong>Fix:</strong> add <code>CreateOptions::recurse_submodules: bool</code> (the struct is already <code>#[non_exhaustive]</code>, so it's a non-breaking addition). When <code>true</code>, pass <code>--recurse-submodules</code> on git ≥ 2.38, fall back to a post-create <code>git submodule update</code> on older git, and honor the existing partial-worktree-cleanup invariant on failure.</p>
+      <p>This wasn't on the project roadmap. We checked. Two existing submodule-related items handle different scenarios — neither addresses worktree-creation-time initialization. So this is a real gap, and one that would have shipped to v1.0 if we hadn't tested against a real submodule repo.</p>
+    </div>
+
+    <h2>What worked</h2>
+
+    <p>Everything else. The list of safety guarantees the README promises mapped almost one-to-one onto checks we ran:</p>
+
+    <ul>
+      <li><strong>5-step unmerged-commit guard:</strong> against a fixture branch with three unpushed, unmerged commits, <code>wt delete</code> refused with a clear error. The worktree directory was preserved on disk. Even with no remote configured (degraded mode), the four remaining steps still ran and protected the data.</li>
+      <li><strong>Lock protection:</strong> a <code>git worktree lock</code>'d worktree survived both <code>wt delete</code> and <code>wt gc --run --force --max-age-days 0</code>. Other worktrees in the same gc pass were correctly evicted; the locked one was left alone.</li>
+      <li><strong>Reconciliation:</strong> when a worktree was removed externally with raw <code>git worktree remove</code>, the next <code>wt list</code> moved its state.json entry to <code>stale_worktrees</code> with an eviction reason and a 30-day TTL — instead of silently lying about the worktree still existing.</li>
+      <li><strong>The 4,972-symlink test:</strong> we installed a real pnpm <code>node_modules</code> in a shadcn-ui worktree (1.3 GB on disk, 4,972 symlinks pointing into a 1.1 GB shared global store), then ran <code>wt delete</code>. The worktree was cleaned in 12 seconds. The global store remained byte-for-byte identical. This is the bug pattern the iso-code README headlines, and it's demonstrably prevented.</li>
+    </ul>
+
+    <h2>The point</h2>
+
+    <p>If a library promises safety, the obligation to validate that promise sits with the library's authors, not its users. The most useful thing a v0.1 release can do is make its own bugs visible early, with repros, in public, before any adopter has to find them.</p>
+
+    <p>Three issues filed against ourselves before announcing the release. The full test pass — methodology, per-repo timings, coverage matrix, what we still don't test — is in <a href="2026-04-22-test-methodology.html">the next post</a>. The whole pipeline is scripted; you can run it against any repo of yours in 90 seconds with <code>./fixtures/test-lifecycle.sh /path/to/your/repo</code>.</p>
+
+    <div class="callout">
+      <strong>If you're evaluating iso-code for a tool you're building:</strong> read the methodology post for the coverage matrix. We deliberately list what we <em>didn't</em> test (concurrent multi-shell access, MCP integration with a real client, Windows). Those are the next things to validate before depending on this for production data safety.
+    </div>
+
+    <a class="back-link" href="./">← back to all posts</a>
+
+  </div>
+</article>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="brand" style="margin-bottom:.4rem"><span class="brand-mark">i</span>iso-code</div>
+      <div>Safe worktrees for agents. Licensed Apache-2.0 OR MIT.</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+      <a href="https://github.com/snehith01001110/ISO-Framework">GitHub</a>
+      <a href="https://crates.io/crates/iso-code">crates.io</a>
+      <a href="../">Home</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

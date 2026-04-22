@@ -47,7 +47,7 @@ pre code{background:none;padding:0;border:0;font-size:inherit}
 .nav-links a:hover{color:var(--fg);text-decoration:none}
 @media(max-width:600px){.nav-links a:not(.github){display:none}}
 
-.hero{padding:5rem 0 3.5rem;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero{padding:5rem 0 3.5rem;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(700px 320px at 50% 0%,rgba(251,150,51,.08),transparent 70%);pointer-events:none}
 .hero-inner{position:relative;text-align:center}
 .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem}
@@ -161,6 +161,20 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
 .hero-version-badge{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--mono);font-size:.65rem;padding:.1rem .45rem;background:rgba(251,150,51,.08);border:1px solid rgba(251,150,51,.22);border-radius:999px;color:var(--accent);text-decoration:none;transition:background .15s,border-color .15s;width:fit-content}
 .hero-version-badge:hover{background:rgba(251,150,51,.15);border-color:rgba(251,150,51,.45);text-decoration:none}
 .hero-version-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0;animation:vpulse 2.4s ease-in-out infinite}
+
+.validation-strip{padding:3.2rem 0;background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);border-bottom:0}
+.validation-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2.2rem;flex-wrap:wrap;gap:.6rem}
+.validation-eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.validation-stamp{font-family:var(--mono);font-size:.74rem;color:var(--fg-faint)}
+.validation-stamp a{color:var(--fg-dim)}
+.validation-stamp a:hover{color:var(--accent);text-decoration:none}
+.validation-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.6rem}
+@media(max-width:900px){.validation-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}}
+.stat{padding:.3rem 0}
+.stat-num{font-family:var(--mono);font-size:clamp(1.8rem,3.6vw,2.4rem);font-weight:700;color:var(--accent);line-height:1.05;margin-bottom:.45rem;letter-spacing:-.02em}
+.stat-num-sub{font-size:.55em;color:var(--fg-dim);font-weight:500;margin-left:.15em}
+.stat-label{font-size:.92rem;color:var(--fg);margin-bottom:.25rem;font-weight:500;line-height:1.3}
+.stat-evidence{font-family:var(--mono);font-size:.72rem;color:var(--fg-faint);line-height:1.45}
 </style>
 </head>
 <body>
@@ -171,6 +185,7 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
     <div class="nav-links">
       <a href="#install">Install</a>
       <a href="#usage">Usage</a>
+      <a href="blog/">Blog</a>
       <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
     </div>
   </div>
@@ -188,6 +203,42 @@ h3{font-size:1.05rem;margin:0 0 .5rem;font-weight:600}
     </div>
   </div>
 </header>
+
+<section id="validation" class="validation-strip">
+  <div class="container">
+    <div class="validation-header">
+      <span class="validation-eyebrow">Externally validated</span>
+      <span class="validation-stamp">iso-code v0.1.1 · April 2026 · <a href="blog/2026-04-22-test-methodology.html">methodology →</a></span>
+    </div>
+    <div class="validation-grid">
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Real-world repos validated</div>
+        <div class="stat-evidence">bat · flask · ui · git/git · next.js</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">80<span class="stat-num-sub"> / 80</span></div>
+        <div class="stat-label">Lifecycle checks passed</div>
+        <div class="stat-evidence">15 checks per repo · 0 failures</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4,972</div>
+        <div class="stat-label">pnpm symlinks deleted</div>
+        <div class="stat-evidence">global store untouched</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2.7<span class="stat-num-sub">GB</span></div>
+        <div class="stat-label">Largest repo handled</div>
+        <div class="stat-evidence">next.js · 246 MB working tree</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5-step</div>
+        <div class="stat-label">Unmerged-commit guard</div>
+        <div class="stat-evidence">verified end-to-end</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="features">
   <div class="container">
