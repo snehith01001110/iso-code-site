@@ -51,11 +51,13 @@ pre code{background:none;padding:0;border:0;font-size:inherit;color:inherit}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);max-width:1040px;margin:0 auto}
 .brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
 .brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
-.nav-links{display:flex;gap:1.4rem;font-size:.9rem}
+.nav-links{display:flex;gap:1.2rem;font-size:.9rem;align-items:center}
 .nav-links a{color:var(--fg-dim)}
 .nav-links a:hover{color:var(--fg);text-decoration:none}
 .nav-links a.active{color:var(--accent)}
-@media(max-width:600px){.nav-links a:not(.github){display:none}}
+.nav-cta{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:6px;background:var(--accent);color:var(--bg)!important;font-family:var(--mono);font-weight:500;font-size:.82rem;transition:background .15s}
+.nav-cta:hover{background:var(--accent-dim);text-decoration:none}
+@media(max-width:600px){.nav-links a:not(.github):not(.nav-cta){display:none}}
 
 article{padding:3rem 0 4rem}
 .article-header{margin-bottom:3rem}
@@ -118,10 +120,10 @@ article li strong{color:var(--fg)}
   <div class="nav-inner">
     <a href="../" class="brand"><span class="brand-mark">i</span>iso-code</a>
     <div class="nav-links">
-      <a href="../#install">Install</a>
       <a href="../#usage">Usage</a>
       <a href="./" class="active">Blog</a>
       <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
+      <a class="nav-cta" href="../start/">Get started</a>
     </div>
   </div>
 </nav>

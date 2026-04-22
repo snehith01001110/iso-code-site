@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get started with iso-code — Install in under 3 minutes</title>
+<meta name="description" content="Install iso-code as an MCP server, a CLI, or a Rust library — and run your first safe worktree lifecycle in a handful of commands.">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://isocode.dev/start/">
+<meta property="og:title" content="Get started with iso-code — Install in under 3 minutes">
+<meta property="og:description" content="Install iso-code as an MCP server, a CLI, or a Rust library — and run your first safe worktree lifecycle in a handful of commands.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://isocode.dev/start/">
+<meta property="og:site_name" content="iso-code">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://isocode.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="iso-code — get started">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Get started with iso-code">
+<meta name="twitter:description" content="Install iso-code as an MCP server, a CLI, or a Rust library — and run your first safe worktree lifecycle in a handful of commands.">
+<meta name="twitter:image" content="https://isocode.dev/og-image.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23FB9633'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='ui-monospace,monospace' font-size='58' font-weight='700' fill='%23080d1a'%3Ei%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080d1a; --bg-2:#0e1526; --bg-3:#141c30;
+  --border:#1e2740; --border-2:#2a3555;
+  --fg:#faebd7; --fg-dim:#a8b0c2; --fg-faint:#6a7387;
+  --accent:#FB9633; --accent-dim:#e07d1a;
+  --danger:#ff6b6b;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.88em;background:var(--bg-3);padding:.1em .4em;border-radius:4px;border:1px solid var(--border);color:var(--fg)}
+pre{font-family:var(--mono);background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-size:.84rem;line-height:1.6;margin:1.5rem 0;color:var(--fg-dim)}
+pre code{background:none;padding:0;border:0;font-size:inherit;color:inherit}
+
+.container{max-width:760px;margin:0 auto;padding:0 1.5rem}
+.nav{position:sticky;top:0;z-index:10;background:rgba(8,13,26,.85);backdrop-filter:blur(8px)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);max-width:1040px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
+.brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.nav-links{display:flex;gap:1.2rem;font-size:.9rem;align-items:center}
+.nav-links a{color:var(--fg-dim)}
+.nav-links a:hover{color:var(--fg);text-decoration:none}
+.nav-links a.active{color:var(--accent)}
+.nav-cta{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:6px;background:var(--accent);color:var(--bg)!important;font-family:var(--mono);font-weight:500;font-size:.82rem;transition:background .15s}
+.nav-cta:hover{background:var(--accent-dim);text-decoration:none}
+.nav-cta.active{background:var(--accent-dim)}
+@media(max-width:600px){.nav-links a:not(.github):not(.nav-cta){display:none}}
+
+.page-header{padding:4rem 0 2.5rem;border-bottom:1px solid var(--border)}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+h1{font-size:clamp(1.9rem,4vw,2.5rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 1rem;font-weight:700}
+.lead{color:var(--fg-dim);font-size:1.08rem;margin:0;max-width:620px;line-height:1.55}
+
+main{padding:3rem 0 4rem}
+main p{margin:1.2rem 0}
+main h2{font-size:1.4rem;margin:2.6rem 0 1rem;font-weight:600;letter-spacing:-.01em}
+main h3{font-size:1.05rem;margin:1.8rem 0 .7rem;font-weight:600}
+main ul,main ol{padding-left:1.4rem;margin:1.2rem 0}
+main li{margin:.4rem 0;color:var(--fg-dim)}
+main li strong{color:var(--fg)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.92rem;background:var(--bg-2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.5rem 0}
+.tbl th,.tbl td{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl tbody tr:last-child th,.tbl tbody tr:last-child td{border-bottom:0}
+.tbl th{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-faint);font-weight:500;background:var(--bg-3)}
+.tbl td:first-child{color:var(--fg)}
+.tbl td{color:var(--fg-dim)}
+
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--accent);color:var(--bg);font-family:var(--mono);font-size:.82rem;font-weight:700;margin-right:.6rem;vertical-align:1px}
+
+.callout{background:var(--bg-2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.2rem 1.4rem;margin:1.8rem 0;font-size:.95rem;color:var(--fg-dim)}
+.callout strong{color:var(--fg)}
+
+.footer{padding:3rem 0;color:var(--fg-faint);font-size:.88rem;border-top:1px solid var(--border);margin-top:2rem}
+.footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;align-items:baseline;max-width:1040px;margin:0 auto;padding:0 1.5rem}
+.footer a{color:var(--fg-dim)}
+.footer a:hover{color:var(--fg)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="brand"><span class="brand-mark">i</span>iso-code</a>
+    <div class="nav-links">
+      <a href="../#usage">Usage</a>
+      <a href="../blog/">Blog</a>
+      <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
+      <a class="nav-cta active" href="./">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <div class="eyebrow">Get started</div>
+    <h1>Install iso-code in under 3 minutes.</h1>
+    <p class="lead">iso-code ships as three packages: a Rust library, a CLI, and an MCP server. Pick the one that matches what you're doing and you'll be running your first safe worktree in a couple of commands.</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <h2>Which package do I want?</h2>
+
+    <p>All three packages use the same underlying library, so all three enforce the same safety guards. The only difference is how you call in.</p>
+
+    <table class="tbl">
+      <thead><tr><th>If you&hellip;</th><th>Install this</th></tr></thead>
+      <tbody>
+        <tr><td>Run an AI coding agent (Claude Code, Cursor, VS Code, OpenCode) and want it to manage worktrees safely</td><td><code>iso-code-mcp</code></td></tr>
+        <tr><td>Want a <code>wt</code> command in your terminal or shell scripts</td><td><code>iso-code-cli</code></td></tr>
+        <tr><td>Are writing a Rust tool that needs to create, list, or delete worktrees</td><td><code>iso-code</code></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Prerequisites</h2>
+
+    <ul>
+      <li><strong>Rust 1.75+</strong> — if you don't have it: <code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh</code></li>
+      <li><strong>Git 2.20+</strong> — 2.36 or newer gets you the fastest <code>porcelain -z</code> paths</li>
+      <li><strong>macOS or Linux</strong> — Windows works via junctions but is still tier-2</li>
+    </ul>
+
+    <p>That's it. No daemons, no background service, no database.</p>
+
+    <h2><span class="step-num">1</span>Path A — Agent user (MCP)</h2>
+
+    <p>Install the server:</p>
+
+    <pre>cargo install iso-code-mcp</pre>
+
+    <p>Then point your agent at it. Pick the config that matches your tool:</p>
+
+    <h3>Claude Code</h3>
+    <pre><span></span>// ~/.claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "iso-code": {
+      "command": "iso-code-mcp",
+      "args": []
+    }
+  }
+}</pre>
+
+    <h3>Cursor</h3>
+    <pre><span></span>// .cursor/mcp.json
+{
+  "mcpServers": {
+    "iso-code": { "command": "iso-code-mcp" }
+  }
+}</pre>
+
+    <h3>VS Code</h3>
+    <pre><span></span>// .vscode/mcp.json
+{
+  "servers": {
+    "iso-code": { "type": "stdio", "command": "iso-code-mcp" }
+  }
+}</pre>
+
+    <h3>OpenCode</h3>
+    <pre><span></span>// opencode.json
+{
+  "mcp": {
+    "servers": {
+      "iso-code": { "type": "local", "command": ["iso-code-mcp"] }
+    }
+  }
+}</pre>
+
+    <p>Restart your agent. Now ask it:</p>
+
+    <pre>"Create a worktree for a new branch called feature/try-isocode, then delete it."</pre>
+
+    <p>The agent will call the <code>worktree_create</code> and <code>worktree_delete</code> tools. Every call goes through the same safety guards the library and CLI use.</p>
+
+    <h2><span class="step-num">2</span>Path B — CLI user (<code>wt</code>)</h2>
+
+    <p>Install the CLI:</p>
+
+    <pre>cargo install iso-code-cli</pre>
+
+    <p>Then run a full lifecycle against a repo you already have:</p>
+
+    <pre>cd /path/to/your/repo
+
+# List — should show just your main worktree
+wt list
+
+# Create — makes a new worktree one level up
+wt create feature/try-isocode ../try-isocode
+
+# Verify it exists
+wt list
+
+# Clean it up — runs the 5-step unmerged-commit check first
+wt delete ../try-isocode</pre>
+
+    <p>That's the whole lifecycle. The commands you'll use day-to-day are <code>list</code>, <code>create</code>, <code>delete</code>, and <code>gc</code> (run with <code>--run</code> to actually evict; default is a dry-run preview).</p>
+
+    <h2><span class="step-num">3</span>Path C — Rust library</h2>
+
+    <p>Add the crate:</p>
+
+    <pre>cargo add iso-code</pre>
+
+    <p>Minimal program:</p>
+
+    <pre><span></span>use iso_code::{Manager, Config, CreateOptions, DeleteOptions};
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let mgr = Manager::new("/path/to/your/repo", Config::default())?;
+
+    let (handle, _) = mgr.create(
+        "feature/try-isocode",
+        "/tmp/try-isocode",
+        CreateOptions::default(),
+    )?;
+
+    for wt in mgr.list()? {
+        println!("{:?}", wt);
+    }
+
+    mgr.delete(&amp;handle, DeleteOptions::default())?;
+    Ok(())
+}</pre>
+
+    <p>Build and run it with <code>cargo run</code>. Same safety guards, same state file on disk — the CLI and MCP server are thin wrappers around exactly this API.</p>
+
+    <h2>What just happened</h2>
+
+    <p>That last <code>delete</code> call — whichever path you took — ran these checks before removing anything:</p>
+
+    <ul>
+      <li><strong>Unmerged-commit check</strong> — five comparisons against the branch's upstream. If any commit isn't in the upstream, delete refuses unless you pass <code>force: true</code>.</li>
+      <li><strong>Symlink-safe recursion</strong> — if the worktree has a pnpm <code>node_modules</code> with thousands of symlinks into a shared global store, those symlinks are removed without following into the store itself.</li>
+      <li><strong>Atomic state update</strong> — <code>state.json</code> is written to a temp file, fsynced, then renamed. If your machine crashes mid-delete, you're left either fully in or fully out, never half.</li>
+      <li><strong>Git reconciliation</strong> — next <code>list</code> compares <code>git worktree list --porcelain</code> against <code>state.json</code> and corrects any drift. Git is always authoritative.</li>
+    </ul>
+
+    <p>None of this needed configuration. Safe by default is the whole point.</p>
+
+    <div class="callout">
+      <strong>Tip:</strong> If you want to see the guards actually fire, create a branch with an unpushed commit, then try <code>wt delete</code> against it. You'll get <code>unmerged commits on 'your-branch': N commit(s) not in upstream — use force to override</code>, and the worktree directory stays on disk.
+    </div>
+
+    <h2>Where to go next</h2>
+
+    <ul>
+      <li><a href="../#features">Safety guarantees</a> — the full list of what iso-code protects against</li>
+      <li><a href="../#usage">Command reference</a> — every <code>wt</code> subcommand with flags</li>
+      <li><a href="https://docs.rs/iso-code">docs.rs/iso-code</a> — full Rust API</li>
+      <li><a href="../blog/2026-04-22-test-methodology.html">Test methodology</a> — how v0.1.1 was validated against five real-world repos</li>
+      <li><a href="../blog/#faq">FAQ</a> — common questions, answered</li>
+      <li><a href="https://github.com/snehith01001110/ISO-Framework">GitHub</a> — source, issues, releases</li>
+    </ul>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="brand" style="margin-bottom:.4rem"><span class="brand-mark">i</span>iso-code</div>
+      <div>Safe worktrees for agents. Licensed Apache-2.0 OR MIT.</div>
+    </div>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+      <a href="https://github.com/snehith01001110/ISO-Framework">GitHub</a>
+      <a href="https://crates.io/crates/iso-code">crates.io</a>
+      <a href="../">Home</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -44,11 +44,13 @@ a:hover{text-decoration:underline}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);max-width:1040px;margin:0 auto}
 .brand{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--fg)}
 .brand-mark{width:22px;height:22px;border-radius:5px;background:var(--accent);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:.85rem}
-.nav-links{display:flex;gap:1.4rem;font-size:.9rem}
+.nav-links{display:flex;gap:1.2rem;font-size:.9rem;align-items:center}
 .nav-links a{color:var(--fg-dim)}
 .nav-links a:hover{color:var(--fg);text-decoration:none}
 .nav-links a.active{color:var(--accent)}
-@media(max-width:600px){.nav-links a:not(.github){display:none}}
+.nav-cta{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:6px;background:var(--accent);color:var(--bg)!important;font-family:var(--mono);font-weight:500;font-size:.82rem;transition:background .15s}
+.nav-cta:hover{background:var(--accent-dim);text-decoration:none}
+@media(max-width:600px){.nav-links a:not(.github):not(.nav-cta){display:none}}
 
 .page-header{padding:4rem 0 2.5rem;border-bottom:1px solid var(--border)}
 .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
@@ -65,11 +67,100 @@ h1{font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;mar
 .post-link:hover .post-title{color:var(--accent)}
 .post-excerpt{color:var(--fg-dim);font-size:.96rem;margin:0;line-height:1.55}
 
+.faq-section{padding:3.5rem 0;border-top:1px solid var(--border)}
+.faq-eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem}
+.faq-heading{font-size:1.6rem;font-weight:600;letter-spacing:-.015em;margin:0 0 2rem}
+.faq-item{padding:1.2rem 0;border-bottom:1px solid var(--border)}
+.faq-item:first-of-type{padding-top:0}
+.faq-item:last-of-type{border-bottom:0;padding-bottom:0}
+.faq-item summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;font-size:1.02rem;font-weight:500;color:var(--fg);padding:.2rem 0;transition:color .15s}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-family:var(--mono);font-size:1.2rem;color:var(--accent);flex-shrink:0;transition:transform .2s}
+.faq-item[open] summary::after{content:"−"}
+.faq-item summary:hover{color:var(--accent)}
+.faq-item .faq-answer{color:var(--fg-dim);font-size:.96rem;line-height:1.6;margin:.8rem 0 .4rem}
+.faq-item .faq-answer code{font-family:var(--mono);font-size:.86em;background:var(--bg-3);padding:.08em .35em;border-radius:3px;border:1px solid var(--border);color:var(--fg)}
+.faq-item .faq-answer p{margin:.6rem 0}
+.faq-item .faq-answer p:first-child{margin-top:0}
+.faq-item .faq-answer p:last-child{margin-bottom:0}
+
 .footer{padding:3rem 0;color:var(--fg-faint);font-size:.88rem;border-top:1px solid var(--border);margin-top:2rem}
 .footer-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;align-items:baseline;max-width:1040px;margin:0 auto;padding:0 1.5rem}
 .footer a{color:var(--fg-dim)}
 .footer a:hover{color:var(--fg)}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is iso-code?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "iso-code is a safety layer between AI coding agents and git worktrees. It ships as a Rust library, a wt CLI, and an iso-code-mcp MCP server — all three enforce the same safety guards (5-step unmerged-commit check, symlink-safe recursion, crash-safe state, circuit breaker, port leases) on every worktree create, delete, and garbage-collect."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which package should I install?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you run an AI coding agent (Claude Code, Cursor, VS Code, OpenCode), install iso-code-mcp. If you want a wt command in your terminal or shell scripts, install iso-code-cli. If you're writing a Rust tool that manages worktrees, add iso-code to Cargo.toml. All three share the same library underneath."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does iso-code replace git worktree?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. iso-code shells out to the git you already have installed. It never reimplements git semantics — git worktree list --porcelain is always authoritative, and iso-code's state.json is just a cache. If they ever disagree, git wins."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which AI coding tools does iso-code work with?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "iso-code-mcp is a standard stdio MCP server, so any MCP-aware orchestrator can use it. Tested configurations exist for Claude Code, Cursor, VS Code, and OpenCode. It was built specifically to fix documented data-loss bugs in those tools and Claude Squad."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to use on my main repo?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. iso-code only operates on worktrees you explicitly create or attach — it never touches your main checkout. State writes are atomic (tmp + fsync + rename) and OS-level file locks prevent concurrent corruption. If iso-code crashes mid-operation you are left either fully in or fully out, never half."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the performance overhead?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Negligible. In the v0.1.1 test pass against five real-world repos, create times ranged from 164ms on flask (2.4 MB) to 3.5s on next.js (246 MB). Delete times scale linearly with working-tree size — that's filesystem-bound, not iso-code overhead. Safety checks themselves add sub-millisecond cost."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does iso-code need a daemon or background service?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. iso-code is a library, a CLI, and a stdio MCP server. There is no daemon, no background service, and no database. State lives in .git/iso-code/state.json next to the repo it manages."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the license?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dual-licensed Apache-2.0 OR MIT. Pick whichever fits your project."
+      }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -77,10 +168,10 @@ h1{font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;mar
   <div class="nav-inner">
     <a href="../" class="brand"><span class="brand-mark">i</span>iso-code</a>
     <div class="nav-links">
-      <a href="../#install">Install</a>
       <a href="../#usage">Usage</a>
       <a href="./" class="active">Blog</a>
       <a class="github" href="https://github.com/snehith01001110/ISO-Framework">GitHub →</a>
+      <a class="nav-cta" href="../start/">Get started</a>
     </div>
   </div>
 </nav>
@@ -96,18 +187,82 @@ h1{font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.15;letter-spacing:-.02em;mar
 <section class="posts">
   <div class="container">
 
-    <a class="post-link" href="2026-04-21-tested-against-real-repos.html">
-      <div class="post-meta">2026-04-21 · 4 min read</div>
-      <h2 class="post-title">We tested iso-code on the repos AI agents actually work on. Here's what broke.</h2>
-      <p class="post-excerpt">Before celebrating the v0.1.1 release, we ran 80 lifecycle checks against the published binaries on five real-world repositories. Three things broke. We filed them against ourselves.</p>
-    </a>
-
     <a class="post-link" href="2026-04-22-test-methodology.html">
       <div class="post-meta">2026-04-22 · 6 min read</div>
       <h2 class="post-title">What an external test pass looks like.</h2>
       <p class="post-excerpt">A library that promises safety only matters if someone has tested it under conditions that look like reality. Here's the methodology, the numbers, and the gaps for iso-code v0.1.1.</p>
     </a>
 
+    <a class="post-link" href="2026-04-21-tested-against-real-repos.html">
+      <div class="post-meta">2026-04-21 · 4 min read</div>
+      <h2 class="post-title">We tested iso-code on the repos AI agents actually work on. Here's what broke.</h2>
+      <p class="post-excerpt">Before celebrating the v0.1.1 release, we ran 80 lifecycle checks against the published binaries on five real-world repositories. Three things broke. We filed them against ourselves.</p>
+    </a>
+
+  </div>
+</section>
+
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="faq-eyebrow">FAQ</div>
+    <h2 class="faq-heading">Frequently asked.</h2>
+
+    <details class="faq-item">
+      <summary>What is iso-code?</summary>
+      <div class="faq-answer">
+        <p>iso-code is a safety layer between AI coding agents and git worktrees. It ships as a Rust library, a <code>wt</code> CLI, and an <code>iso-code-mcp</code> MCP server — all three enforce the same safety guards (5-step unmerged-commit check, symlink-safe recursion, crash-safe state, circuit breaker, port leases) on every worktree create, delete, and garbage-collect.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Which package should I install?</summary>
+      <div class="faq-answer">
+        <p>If you run an AI coding agent (Claude Code, Cursor, VS Code, OpenCode), install <code>iso-code-mcp</code>. If you want a <code>wt</code> command in your terminal or shell scripts, install <code>iso-code-cli</code>. If you're writing a Rust tool that manages worktrees, add <code>iso-code</code> to <code>Cargo.toml</code>. All three share the same library underneath.</p>
+        <p>The <a href="../start/">getting started guide</a> walks through each path in ~3 minutes.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Does iso-code replace <code>git worktree</code>?</summary>
+      <div class="faq-answer">
+        <p>No. iso-code shells out to the <code>git</code> you already have installed. It never reimplements git semantics — <code>git worktree list --porcelain</code> is always authoritative, and iso-code's <code>state.json</code> is just a cache. If they ever disagree, git wins.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Which AI coding tools does iso-code work with?</summary>
+      <div class="faq-answer">
+        <p><code>iso-code-mcp</code> is a standard stdio MCP server, so any MCP-aware orchestrator can use it. Tested configurations exist for <strong>Claude Code</strong>, <strong>Cursor</strong>, <strong>VS Code</strong>, and <strong>OpenCode</strong>. It was built specifically to fix documented data-loss bugs in those tools and Claude Squad.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is it safe to use on my main repo?</summary>
+      <div class="faq-answer">
+        <p>Yes. iso-code only operates on worktrees you explicitly create or attach — it never touches your main checkout. State writes are atomic (tmp + fsync + rename) and OS-level file locks prevent concurrent corruption. If iso-code crashes mid-operation you are left either fully in or fully out, never half.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the performance overhead?</summary>
+      <div class="faq-answer">
+        <p>Negligible. In the v0.1.1 test pass against five real-world repos, create times ranged from 164 ms on flask (2.4 MB) to 3.5 s on next.js (246 MB). Delete times scale linearly with working-tree size — that's filesystem-bound, not iso-code overhead. Safety checks themselves add sub-millisecond cost. Full numbers are in the <a href="2026-04-22-test-methodology.html">test methodology post</a>.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Does iso-code need a daemon or background service?</summary>
+      <div class="faq-answer">
+        <p>No. iso-code is a library, a CLI, and a stdio MCP server. There is no daemon, no background service, and no database. State lives in <code>.git/iso-code/state.json</code> next to the repo it manages.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What is the license?</summary>
+      <div class="faq-answer">
+        <p>Dual-licensed <a href="https://github.com/snehith01001110/ISO-Framework/blob/main/LICENSE-APACHE">Apache-2.0</a> OR <a href="https://github.com/snehith01001110/ISO-Framework/blob/main/LICENSE-MIT">MIT</a>. Pick whichever fits your project.</p>
+      </div>
+    </details>
   </div>
 </section>
 
