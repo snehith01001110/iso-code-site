@@ -441,7 +441,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     </table>
 
     <h3 id="mcp" class="usage-heading" style="margin-top:3rem"><span class="usage-badge">MCP</span>iso-code-mcp — orchestrator config</h3>
-    <p class="usage-desc">The stdio MCP server exposes the library as <code>worktree_*</code> tools to any MCP-aware orchestrator. Drop one of these into your config.</p>
+    <p class="usage-desc">The stdio MCP server exposes five tools — <code>worktree_list</code>, <code>worktree_status</code>, <code>worktree_create</code>, <code>worktree_delete</code>, <code>worktree_gc</code> — to any MCP-aware orchestrator. Drop one of these into your config.</p>
     <div class="tabs" role="tablist">
       <button class="tab active" data-tab="cc">Claude Code</button>
       <button class="tab" data-tab="cursor">Cursor</button>
@@ -450,7 +450,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     </div>
     <div class="tab-panels">
       <div class="tab-panel active" data-panel="cc">
-<pre><span class="c">// ~/.claude/claude_desktop_config.json</span>
+<pre><span class="c">// ~/.claude.json</span>
 {
   <span class="p">"mcpServers"</span>: {
     <span class="p">"iso-code"</span>: {

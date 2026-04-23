@@ -146,7 +146,7 @@ main li strong{color:var(--fg)}
     <p>Then point your agent at it. Pick the config that matches your tool:</p>
 
     <h3>Claude Code</h3>
-    <pre><span></span>// ~/.claude/claude_desktop_config.json
+    <pre><span></span>// ~/.claude.json
 {
   "mcpServers": {
     "iso-code": {
@@ -186,7 +186,7 @@ main li strong{color:var(--fg)}
 
     <pre>"Create a worktree for a new branch called feature/try-isocode, then delete it."</pre>
 
-    <p>The agent will call the <code>worktree_create</code> and <code>worktree_delete</code> tools. Every call goes through the same safety guards the library and CLI use.</p>
+    <p>The agent will use <code>worktree_create</code> and <code>worktree_delete</code> for that prompt. The full tool set is <code>worktree_list</code>, <code>worktree_status</code> (branch, state, disk usage per worktree), <code>worktree_create</code>, <code>worktree_delete</code>, and <code>worktree_gc</code> — every call goes through the same safety guards as the library and CLI.</p>
 
     <h2><span class="step-num">2</span>Path B — CLI user (<code>wt</code>)</h2>
 
